@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora de Idade | Isaac Barbosa</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+    }
+    :root {
+      --bg: #fff;
+      --text: #111;
+      --primary: #e60000;
+      --card: #f8f8f8;
+    }
+    body.dark {
+      --bg: #000;
+      --text: #fff;
+      --primary: #e60000;
+      --card: #1a1a1a;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      scroll-behavior: smooth;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--card);
+      margin-top: 0;
+      width: 100%;
+      max-width: 900px;
+    }
+    .toggle-mode {
+      background: var(--primary);
+      border: none;
+      padding: 0.6rem 1.2rem;
+      color: white;
+      border-radius: 0.8rem;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 1rem;
+      box-shadow: 0 6px 10px rgba(230, 0, 0, 0.5);
+      transform-origin: center;
+      transition:
+        background 0.3s ease,
+        box-shadow 0.3s ease,
+        transform 0.3s ease;
+      user-select: none;
+    }
+    .toggle-mode:hover {
+      background: #000;
+      color: var(--primary);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
+      transform: scale(1.1) rotate(5deg);
+    }
+    .toggle-mode:active {
+      transform: scale(0.95) rotate(0deg);
+      box-shadow: 0 4px 8px rgba(230, 0, 0, 0.7);
+    }
+    h1, h2 {
+      color: var(--text);
+      user-select: none;
+    }
+    main {
+      margin-top: 3rem;
+      max-width: 900px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    section {
+      background: var(--card);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(40px);
+      transition:
+        opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.3s ease,
+        transform 0.3s ease;
+      will-change: transform, opacity;
+      border: 2px solid transparent;
+      cursor: default;
+    }
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+      border-color: var(--primary);
+      box-shadow: 0 12px 40px var(--primary);
+    }
+    section:hover {
+      box-shadow: 0 20px 60px var(--primary);
+      transform: translateY(-8px) scale(1.02);
+      transition: box-shadow 0.4s ease, transform 0.4s ease;
+    }
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      color: var(--text);
+      font-size: 1.1rem;
+    }
+    input[type="date"] {
+      padding: 0.9rem 1rem;
+      font-size: 1.1rem;
+      border-radius: 0.7rem;
+      border: 2px solid var(--primary);
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto 0.5rem;
+      display: block;
+      background: transparent;
+      color: var(--text);
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+      transition: border-color 0.3s ease;
+      cursor: pointer;
+    }
+    input[type="date"]:focus {
+      border-color: #a60000;
+      outline: none;
+      box-shadow: 0 0 10px var(--primary);
+    }
+    .resultado {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 1.5rem;
+      line-height: 2;
+      white-space: pre-line;
+      color: var(--text);
+      user-select: text;
+    }
+    small {
+      color: var(--text);
+      opacity: 0.7;
+      font-size: 0.9rem;
+      display: block;
+      margin-bottom: 1.5rem;
+    }
+    footer {
+      margin-top: 5rem;
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--text);
+      user-select: none;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Calculadora de Idade</h1>
+    <button class="toggle-mode" onclick="toggleDarkMode()">Modo Escuro</button>
+  </header>
+
+  <main>
+    <section id="calculadora">
+      <label for="birthdate">Data de nascimento</label>
+      <input type="date" id="birthdate" min="1909-08-21" max="" />
+      <small>A data mínima é 21/08/1909 (Ethel May Caterham – pessoa mais velha viva em 2025).</small>
+      <div class="resultado" id="resultado">Preencha a data e espera a mágica rolar...</div>
+    </section>
+
+    <section id="sobre">
+      <h2>Sobre</h2>
+      <p>Esse site calcula a sua idade em anos, meses, dias, minutos e segundos em tempo real. A data aumenta sem você precisar atualizar.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>2025 Isaac Barbosa. Todos os direitos reservados.</p> 
+  </footer>
+
+  <script>
+    const inputDate = document.getElementById('birthdate');
+    inputDate.max = new Date().toISOString().split('T')[0];
+
+    const resultado = document.getElementById('resultado');
+
+    function calculaIdadeCompleta(nascimento, agora) {
+      if (!nascimento || agora < nascimento) return null;
+
+      let anos = agora.getFullYear() - nascimento.getFullYear();
+      let meses = agora.getMonth() - nascimento.getMonth();
+      let dias = agora.getDate() - nascimento.getDate();
+      let horas = agora.getHours() - nascimento.getHours();
+      let minutos = agora.getMinutes() - nascimento.getMinutes();
+      let segundos = agora.getSeconds() - nascimento.getSeconds();
+
+      if (segundos < 0) { segundos += 60; minutos--; }
+      if (minutos < 0) { minutos += 60; horas--; }
+      if (horas < 0) { horas += 24; dias--; }
+      if (dias < 0) {
+        const mesAnterior = new Date(agora.getFullYear(), agora.getMonth(), 0);
+        dias += mesAnterior.getDate();
+        meses--;
+      }
+      if (meses < 0) { meses += 12; anos--; }
+
+      return { anos, meses, dias, horas, minutos, segundos };
+    }
+
+    let intervalo;
+
+    inputDate.addEventListener('change', () => {
+      clearInterval(intervalo);
+      const nascimento = new Date(inputDate.value);
+      if (isNaN(nascimento)) {
+        resultado.textContent = "Data inválida, insere direito.";
+        return;
+      }
+      if (nascimento > new Date()) {
+        resultado.textContent = "Não nasce no futuro, não.";
+        return;
+      }
+
+      function atualiza() {
+        const agora = new Date();
+        const idade = calculaIdadeCompleta(nascimento, agora);
+        if (!idade) {
+          resultado.textContent = "Erro no cálculo da idade.";
+          return;
+        }
+        resultado.textContent =
+          `Idade: ${idade.anos} anos, ${idade.meses} meses, ${idade.dias} dias\n` +
+          `${idade.horas} horas, ${idade.minutos} minutos, ${idade.segundos} segundos`;
+      }
+
+      atualiza();
+      intervalo = setInterval(atualiza, 1000);
+    });
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+    }
+
+    const sections = document.querySelectorAll('section');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting) {
+          const index = Array.from(sections).indexOf(entry.target);
+          const delay = index * 300 + Math.random() * 150;
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold: 0.25});
+    sections.forEach(section => observer.observe(section));
+  </script>
+</body>
+</html>
